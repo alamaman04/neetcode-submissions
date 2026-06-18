@@ -1,0 +1,48 @@
+class Solution {
+   public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+
+        queue<pair<int, int>> q;
+        
+        int fresh = 0 ;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if(grid[i][j]==1) fresh++;
+                if (grid[i][j] == 2) {
+                    q.push({i, j});
+                }
+            }
+        }
+        // check if no fruits 
+        if(fresh==0) return 0 ;
+
+        int dx[] = {1, -1, 0, 0};
+        int dy[] = {0, 0, -1, 1};
+        int steps = 0 ;
+        while (!q.empty()) {
+            int l = q.size();
+            bool rottenAny = false;
+            for (int i = 0; i < l; i++) {
+                auto p = q.front();
+                q.pop();
+                int r = p.first;
+                int c = p.second;
+                for (int d = 0; d < 4; d++) {
+                    int nr = r + dx[d];
+                    int nc = c + dy[d];
+                    if (nr < 0 || nr >= m || nc < 0 || nc >= n || grid[nr][nc] != 1 )
+                        continue;
+                    grid[nr][nc]=2 ;
+                    q.push({nr,nc}) ;
+                    fresh-- ;
+                    rottenAny = true ;
+                }
+            }
+            if(rottenAny)steps++ ;
+        }
+        if(fresh>0) return -1;
+        return steps ;
+    }
+};
